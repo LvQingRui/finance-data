@@ -1,0 +1,23 @@
+id,metric_code,metric_name,stat_domain,metric_type,metric_unit,currency_required_flag,calculation_rule,yn,created_at,updated_at
+1,CUSTOMER_ACTIVE_COUNT,活跃客户数,customer,count,户,0,count distinct active customer_id,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+2,ACCOUNT_ACTIVE_COUNT,正常账户数,account,count,户,0,count active bank_account,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+3,TRANSACTION_AMOUNT,交易金额,transaction,amount,元,1,sum success transaction_amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+4,TRANSACTION_COUNT,交易笔数,transaction,count,笔,0,count success transaction,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+5,WEALTH_AUM,理财持仓规模,wealth,amount,元,1,sum current_amount from wealth_position,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+6,WEALTH_ORDER_AMOUNT,理财订单金额,wealth,amount,元,1,sum confirmed wealth_order amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+7,LOAN_APPLICATION_COUNT,贷款申请数,loan,count,笔,0,count loan_application,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+8,LOAN_DISBURSE_AMOUNT,放款金额,loan,amount,元,1,sum success loan_disbursement amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+9,REPAYMENT_AMOUNT,还款金额,repayment,amount,元,1,sum success repayment_amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+10,OVERDUE_AMOUNT,逾期余额,repayment,amount,元,1,sum active overdue outstanding_amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+11,RISK_EVENT_COUNT,风险事件数,risk,count,件,0,count risk_event,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+12,COLLECTION_RECOVERY_RATE,催收回收率,collection,rate,%,0,recovered_amount / assigned_amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+13,CUSTOMER_NEW_COUNT,新增客户数,customer,count,户,0,count new customer_id,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+14,ACCOUNT_NEW_COUNT,新增账户数,account,count,户,0,count new bank_account,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+15,TRANSACTION_FAILED_COUNT,失败交易笔数,transaction,count,笔,0,count failed transaction,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+16,WEALTH_POSITION_COUNT,理财持仓数,wealth,count,笔,0,count active wealth_position,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+17,LOAN_CONTRACT_ACTIVE_COUNT,有效贷款合同数,loan,count,笔,0,count active loan_contract,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+18,LOAN_OUTSTANDING_AMOUNT,贷款余额,loan,amount,元,1,sum outstanding principal,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+19,OVERDUE_CONTRACT_COUNT,逾期合同数,repayment,count,笔,0,count overdue loan_contract,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+20,RISK_MANUAL_REVIEW_COUNT,人工复核任务数,risk,count,件,0,count manual_review_task,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+21,COLLECTION_CASE_COUNT,催收案件数,collection,count,件,0,count collection_case,1,2024-01-01 00:00:00,2026-01-01 00:00:00
+22,COLLECTION_RECOVERED_AMOUNT,催收回收金额,collection,amount,元,1,sum collection recovered amount,1,2024-01-01 00:00:00,2026-01-01 00:00:00

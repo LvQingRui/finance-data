@@ -1,0 +1,19 @@
+id,service_code,service_name,category_id,currency_code,service_type,fee_amount,service_status,created_at,updated_at
+1,SVC_ACCOUNT_BASIC,基础账户服务,41,CNY,account_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+2,SVC_TRANSFER_FAST,快速转账服务,42,CNY,transaction_service,2,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+3,SVC_WEALTH_ADVISORY,理财顾问服务,43,CNY,wealth_service,20,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+4,SVC_LOAN_EXPRESS,贷款快速处理服务,44,CNY,loan_service,50,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+5,SVC_SUPPORT_PRIORITY,优先客服服务,45,CNY,support_service,10,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+6,SVC_SMS_NOTICE,短信通知服务,41,CNY,account_service,1,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+7,SVC_ESTATEMENT,电子对账单服务,41,CNY,account_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+8,SVC_CROSS_BANK_TRANSFER,跨行转账服务,42,CNY,transaction_service,3,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+9,SVC_WEALTH_REPORT,理财持仓报告服务,43,CNY,wealth_service,5,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+10,SVC_LOAN_REPAY_REMIND,贷款还款提醒服务,44,CNY,loan_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+11,SVC_COLLECTION_NEGOTIATE,协商还款服务,45,CNY,support_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+12,SVC_API_ENTERPRISE,企业开放接口服务,42,CNY,transaction_service,100,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+13,SVC_CARD_LOSS_REPORT,银行卡挂失服务,41,CNY,account_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+14,SVC_LIMIT_ADJUST,账户限额调整服务,41,CNY,account_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+15,SVC_CROSS_BORDER_REMIT,跨境汇款服务,42,CNY,transaction_service,30,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+16,SVC_WEALTH_RISK_REVIEW,理财风险复核服务,43,CNY,wealth_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+17,SVC_LOAN_EXTENSION,贷款展期服务,44,CNY,loan_service,20,active,2019-01-01 00:00:00,2026-01-01 00:00:00
+18,SVC_AML_REVIEW,反洗钱复核服务,45,CNY,support_service,0,active,2019-01-01 00:00:00,2026-01-01 00:00:00

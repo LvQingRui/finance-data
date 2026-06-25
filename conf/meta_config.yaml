@@ -1,0 +1,1021 @@
+tables:
+  - name: dim_branch
+    role: dim
+    description: 银行机构维表，维护总行、分行、支行和营业网点。
+    columns:
+      - name: id
+        role: primary_key
+        description: 机构主键 ID。
+        alias: [机构ID]
+        sync: false
+      - name: branch_code
+        role: dimension
+        description: 机构编码。
+        alias: [机构编码, 分行编码]
+        sync: false
+      - name: branch_name
+        role: dimension
+        description: 机构名称，如某某分行、某某支行。
+        alias: [机构名称, 分行, 支行, 网点]
+        sync: true
+      - name: branch_level
+        role: dimension
+        description: 机构层级，head_office/branch/sub_branch/outlet。
+        alias: [机构层级, 层级]
+        sync: true
+      - name: province
+        role: dimension
+        description: 机构所在省份。
+        alias: [省份, 省]
+        sync: true
+      - name: city
+        role: dimension
+        description: 机构所在城市。
+        alias: [城市]
+        sync: true
+      - name: branch_status
+        role: dimension
+        description: 机构状态，active/suspended/closed。
+        alias: [机构状态, 状态]
+        sync: true
+
+  - name: dim_channel
+    role: dim
+    description: 业务渠道维表，维护手机银行、网上银行、柜面等渠道。
+    columns:
+      - name: id
+        role: primary_key
+        description: 渠道主键 ID。
+        alias: [渠道ID]
+        sync: false
+      - name: channel_code
+        role: dimension
+        description: 渠道编码。
+        alias: [渠道编码]
+        sync: false
+      - name: channel_name
+        role: dimension
+        description: 渠道名称。
+        alias: [渠道, 渠道名称, 交易渠道]
+        sync: true
+      - name: channel_type
+        role: dimension
+        description: 渠道类型，mobile_bank/online_bank/counter 等。
+        alias: [渠道类型]
+        sync: true
+      - name: channel_status
+        role: dimension
+        description: 渠道状态。
+        alias: [渠道状态]
+        sync: true
+
+  - name: dim_risk_level
+    role: dim
+    description: 风险等级维表，维护客户、产品和事件风险等级。
+    columns:
+      - name: id
+        role: primary_key
+        description: 风险等级主键 ID。
+        alias: [风险等级ID]
+        sync: false
+      - name: risk_level_code
+        role: dimension
+        description: 风险等级编码。
+        alias: [风险等级编码]
+        sync: false
+      - name: risk_level_name
+        role: dimension
+        description: 风险等级名称，如 R1、R2、R3。
+        alias: [风险等级, 等级名称]
+        sync: true
+      - name: risk_level_type
+        role: dimension
+        description: 风险等级类型，customer/product/event。
+        alias: [等级类型]
+        sync: true
+
+  - name: customer
+    role: dim
+    description: 客户主表，存储个人和企业客户基础信息与生命周期状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 客户主键 ID。
+        alias: [客户ID, 用户ID]
+        sync: false
+      - name: customer_no
+        role: dimension
+        description: 客户号，业务唯一标识。
+        alias: [客户号, 用户号]
+        sync: false
+      - name: customer_type
+        role: dimension
+        description: 客户类型，personal/enterprise。
+        alias: [客户类型, 用户类型]
+        sync: true
+      - name: customer_name
+        role: dimension
+        description: 客户名称。
+        alias: [客户名称, 用户名称]
+        sync: true
+      - name: branch_id
+        role: foreign_key
+        description: 归属机构 ID，关联 dim_branch.id。
+        alias: [机构ID, 归属机构]
+        sync: false
+      - name: register_channel_id
+        role: foreign_key
+        description: 注册渠道 ID，关联 dim_channel.id。
+        alias: [注册渠道ID]
+        sync: false
+      - name: risk_level_id
+        role: foreign_key
+        description: 客户风险等级 ID，关联 dim_risk_level.id。
+        alias: [风险等级ID]
+        sync: false
+      - name: customer_status
+        role: dimension
+        description: 客户状态，active/inactive/closed 等。
+        alias: [客户状态, 用户状态]
+        sync: true
+      - name: opened_at
+        role: dimension
+        description: 客户开户/注册时间，用于统计新增客户。
+        alias: [开户时间, 注册时间, 创建时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: bank_account
+    role: fact
+    description: 银行账户表，维护客户资金账户、余额和账户状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 账户主键 ID。
+        alias: [账户ID]
+        sync: false
+      - name: account_no
+        role: dimension
+        description: 账户号。
+        alias: [账户号, 银行账号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: branch_id
+        role: foreign_key
+        description: 开户机构 ID，关联 dim_branch.id。
+        alias: [机构ID, 开户机构]
+        sync: false
+      - name: open_channel_id
+        role: foreign_key
+        description: 开户渠道 ID，关联 dim_channel.id。
+        alias: [开户渠道ID, 渠道ID]
+        sync: false
+      - name: account_status
+        role: dimension
+        description: 账户状态，active/frozen/closed 等，active 表示正常账户。
+        alias: [账户状态, 正常账户]
+        sync: true
+      - name: balance_amount
+        role: measure
+        description: 账户余额。
+        alias: [余额, 账户余额]
+        sync: false
+      - name: frozen_amount
+        role: measure
+        description: 冻结金额。
+        alias: [冻结金额]
+        sync: false
+      - name: available_amount
+        role: measure
+        description: 可用余额。
+        alias: [可用余额]
+        sync: false
+      - name: opened_at
+        role: dimension
+        description: 账户开户时间，用于统计新增账户。
+        alias: [开户时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: account_transaction
+    role: fact
+    description: 账户交易表，记录转账、消费、充值、提现等资金交易。
+    columns:
+      - name: id
+        role: primary_key
+        description: 交易主键 ID。
+        alias: [交易ID]
+        sync: false
+      - name: transaction_no
+        role: dimension
+        description: 交易流水号。
+        alias: [流水号, 交易号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: channel_id
+        role: foreign_key
+        description: 交易渠道 ID，关联 dim_channel.id。
+        alias: [渠道ID, 交易渠道]
+        sync: false
+      - name: transaction_type
+        role: dimension
+        description: 交易类型，transfer/consume/recharge/withdraw 等。
+        alias: [交易类型, 类型]
+        sync: true
+      - name: transaction_status
+        role: dimension
+        description: 交易状态，success/failed/pending 等，统计金额和笔数时需过滤 success。
+        alias: [交易状态, 成功, 失败]
+        sync: true
+      - name: currency_code
+        role: dimension
+        description: 交易币种，默认 CNY。
+        alias: [币种]
+        sync: true
+      - name: transaction_amount
+        role: measure
+        description: 交易金额，统计交易金额时求和且过滤成功交易。
+        alias: [交易金额, 流水金额, 交易额]
+        sync: false
+      - name: fee_amount
+        role: measure
+        description: 手续费金额。
+        alias: [手续费]
+        sync: false
+      - name: transaction_at
+        role: dimension
+        description: 交易发生时间。
+        alias: [交易时间, 发生时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: wealth_product
+    role: dim
+    description: 理财产品表，定义产品基础信息、风险等级和产品状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 理财产品主键 ID。
+        alias: [产品ID]
+        sync: false
+      - name: product_code
+        role: dimension
+        description: 产品编码。
+        alias: [产品编码]
+        sync: false
+      - name: product_name
+        role: dimension
+        description: 理财产品名称。
+        alias: [产品名称, 理财产品]
+        sync: true
+      - name: risk_level_id
+        role: foreign_key
+        description: 产品风险等级 ID，关联 dim_risk_level.id。
+        alias: [风险等级ID]
+        sync: false
+      - name: product_type
+        role: dimension
+        description: 产品类型。
+        alias: [产品类型]
+        sync: true
+      - name: product_status
+        role: dimension
+        description: 产品状态。
+        alias: [产品状态]
+        sync: true
+
+  - name: wealth_order
+    role: fact
+    description: 理财订单表，记录申购、赎回等理财交易订单。
+    columns:
+      - name: id
+        role: primary_key
+        description: 理财订单主键 ID。
+        alias: [订单ID]
+        sync: false
+      - name: order_no
+        role: dimension
+        description: 理财订单号。
+        alias: [订单号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: product_id
+        role: foreign_key
+        description: 理财产品 ID，关联 wealth_product.id。
+        alias: [产品ID]
+        sync: false
+      - name: channel_id
+        role: foreign_key
+        description: 交易渠道 ID，关联 dim_channel.id。
+        alias: [渠道ID]
+        sync: false
+      - name: order_type
+        role: dimension
+        description: 订单类型，purchase/redeem 等。
+        alias: [订单类型, 申购, 赎回]
+        sync: true
+      - name: order_status
+        role: dimension
+        description: 订单状态，confirmed/cancelled 等。
+        alias: [订单状态]
+        sync: true
+      - name: order_amount
+        role: measure
+        description: 理财订单金额。
+        alias: [订单金额, 理财订单金额]
+        sync: false
+      - name: confirmed_amount
+        role: measure
+        description: 确认金额，统计已确认理财订单时使用。
+        alias: [确认金额]
+        sync: false
+      - name: submitted_at
+        role: dimension
+        description: 订单提交时间。
+        alias: [提交时间]
+        sync: false
+      - name: confirmed_at
+        role: dimension
+        description: 订单确认时间。
+        alias: [确认时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: wealth_position
+    role: fact
+    description: 理财持仓表，维护客户理财份额、市值和收益。
+    columns:
+      - name: id
+        role: primary_key
+        description: 持仓主键 ID。
+        alias: [持仓ID]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: product_id
+        role: foreign_key
+        description: 理财产品 ID，关联 wealth_product.id。
+        alias: [产品ID]
+        sync: false
+      - name: market_value_amount
+        role: measure
+        description: 持仓市值，即理财持仓规模/AUM。
+        alias: [持仓规模, 理财规模, AUM, 市值]
+        sync: false
+      - name: holding_share
+        role: measure
+        description: 持有份额。
+        alias: [持有份额, 份额]
+        sync: false
+      - name: position_status
+        role: dimension
+        description: 持仓状态，active/closed 等，active 表示有效持仓。
+        alias: [持仓状态]
+        sync: true
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: loan_application
+    role: fact
+    description: 贷款申请表，记录客户贷款申请及审批状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 贷款申请主键 ID。
+        alias: [申请ID]
+        sync: false
+      - name: application_no
+        role: dimension
+        description: 贷款申请编号。
+        alias: [申请编号, 申请号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: product_id
+        role: foreign_key
+        description: 贷款产品 ID。
+        alias: [产品ID, 贷款产品]
+        sync: false
+      - name: channel_id
+        role: foreign_key
+        description: 申请渠道 ID，关联 dim_channel.id。
+        alias: [渠道ID]
+        sync: false
+      - name: apply_amount
+        role: measure
+        description: 申请金额。
+        alias: [申请金额]
+        sync: false
+      - name: application_status
+        role: dimension
+        description: 申请状态，submitted/approved/rejected 等。
+        alias: [申请状态, 审批状态]
+        sync: true
+      - name: submitted_at
+        role: dimension
+        description: 申请提交时间。
+        alias: [申请时间, 提交时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: loan_contract
+    role: fact
+    description: 贷款合同借据表，维护合同金额、余额和合同状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 合同主键 ID。
+        alias: [合同ID]
+        sync: false
+      - name: contract_no
+        role: dimension
+        description: 合同编号。
+        alias: [合同编号, 合同号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: product_id
+        role: foreign_key
+        description: 贷款产品 ID。
+        alias: [产品ID]
+        sync: false
+      - name: principal_amount
+        role: measure
+        description: 合同本金金额。
+        alias: [本金, 合同金额]
+        sync: false
+      - name: outstanding_principal_amount
+        role: measure
+        description: 剩余本金，即贷款余额。
+        alias: [贷款余额, 剩余本金, 未还本金]
+        sync: false
+      - name: contract_status
+        role: dimension
+        description: 合同状态，active/settled/overdue 等，active 表示有效合同。
+        alias: [合同状态]
+        sync: true
+      - name: disbursed_at
+        role: dimension
+        description: 放款时间。
+        alias: [放款时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: loan_disbursement
+    role: fact
+    description: 放款记录表，维护放款金额、放款账户和放款状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 放款记录主键 ID。
+        alias: [放款ID]
+        sync: false
+      - name: disbursement_no
+        role: dimension
+        description: 放款编号。
+        alias: [放款编号]
+        sync: false
+      - name: contract_id
+        role: foreign_key
+        description: 合同 ID，关联 loan_contract.id。
+        alias: [合同ID]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: disbursement_amount
+        role: measure
+        description: 放款金额，统计放款金额时求和且过滤成功放款。
+        alias: [放款金额, 放款额]
+        sync: false
+      - name: disbursement_status
+        role: dimension
+        description: 放款状态，success/failed 等。
+        alias: [放款状态]
+        sync: true
+      - name: disbursed_at
+        role: dimension
+        description: 放款时间。
+        alias: [放款时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: repayment_bill
+    role: fact
+    description: 还款账单表，维护每期应还、已还和逾期状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 账单主键 ID。
+        alias: [账单ID]
+        sync: false
+      - name: bill_no
+        role: dimension
+        description: 账单编号。
+        alias: [账单编号]
+        sync: false
+      - name: contract_id
+        role: foreign_key
+        description: 合同 ID，关联 loan_contract.id。
+        alias: [合同ID]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: paid_amount
+        role: measure
+        description: 已还金额，统计还款金额时使用。
+        alias: [还款金额, 已还金额]
+        sync: false
+      - name: outstanding_amount
+        role: measure
+        description: 未还金额。
+        alias: [未还金额]
+        sync: false
+      - name: bill_status
+        role: dimension
+        description: 账单状态，paid/overdue/partial 等。
+        alias: [账单状态, 还款状态]
+        sync: true
+      - name: due_date
+        role: dimension
+        description: 应还日期。
+        alias: [应还日期, 到期日]
+        sync: false
+      - name: paid_at
+        role: dimension
+        description: 还款完成时间。
+        alias: [还款时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: repayment_record
+    role: fact
+    description: 还款记录表，维护还款交易和入账记录。
+    columns:
+      - name: id
+        role: primary_key
+        description: 还款记录主键 ID。
+        alias: [还款记录ID]
+        sync: false
+      - name: repayment_no
+        role: dimension
+        description: 还款编号。
+        alias: [还款编号]
+        sync: false
+      - name: contract_id
+        role: foreign_key
+        description: 合同 ID，关联 loan_contract.id。
+        alias: [合同ID]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: repayment_amount
+        role: measure
+        description: 还款金额，统计还款金额时求和且过滤成功还款。
+        alias: [还款金额, 还款额]
+        sync: false
+      - name: repayment_status
+        role: dimension
+        description: 还款状态，success/failed 等。
+        alias: [还款状态]
+        sync: true
+      - name: repaid_at
+        role: dimension
+        description: 还款时间。
+        alias: [还款时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: overdue_record
+    role: fact
+    description: 逾期记录表，维护逾期天数、逾期金额和逾期阶段。
+    columns:
+      - name: id
+        role: primary_key
+        description: 逾期记录主键 ID。
+        alias: [逾期ID]
+        sync: false
+      - name: overdue_no
+        role: dimension
+        description: 逾期编号。
+        alias: [逾期编号]
+        sync: false
+      - name: contract_id
+        role: foreign_key
+        description: 合同 ID，关联 loan_contract.id。
+        alias: [合同ID]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: outstanding_amount
+        role: measure
+        description: 逾期余额/未还逾期金额，统计当前逾期余额时使用。
+        alias: [逾期余额, 逾期金额]
+        sync: false
+      - name: overdue_total_amount
+        role: measure
+        description: 逾期总金额。
+        alias: [逾期总金额]
+        sync: false
+      - name: overdue_days
+        role: measure
+        description: 逾期天数。
+        alias: [逾期天数]
+        sync: false
+      - name: overdue_level
+        role: dimension
+        description: 逾期阶段/逾期等级。
+        alias: [逾期阶段, 逾期等级]
+        sync: true
+      - name: overdue_status
+        role: dimension
+        description: 逾期状态，active/settled 等，active 表示当前逾期。
+        alias: [逾期状态]
+        sync: true
+      - name: overdue_start_date
+        role: dimension
+        description: 逾期开始日期。
+        alias: [逾期开始日期]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: risk_event
+    role: fact
+    description: 风险事件表，记录业务触发的风险事件和决策结果。
+    columns:
+      - name: id
+        role: primary_key
+        description: 风险事件主键 ID。
+        alias: [事件ID]
+        sync: false
+      - name: event_no
+        role: dimension
+        description: 风险事件编号。
+        alias: [事件编号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: event_type
+        role: dimension
+        description: 事件类型。
+        alias: [事件类型, 风险类型]
+        sync: true
+      - name: event_status
+        role: dimension
+        description: 事件状态。
+        alias: [事件状态]
+        sync: true
+      - name: hit_flag
+        role: dimension
+        description: 是否命中风控规则，1 表示命中。
+        alias: [命中, 规则命中]
+        sync: true
+      - name: created_at
+        role: dimension
+        description: 事件创建时间，统计风险事件数时使用。
+        alias: [创建时间, 发生时间]
+        sync: false
+
+  - name: collection_case
+    role: fact
+    description: 催收案件表，维护逾期案件、催收阶段和分案状态。
+    columns:
+      - name: id
+        role: primary_key
+        description: 催收案件主键 ID。
+        alias: [案件ID]
+        sync: false
+      - name: case_no
+        role: dimension
+        description: 催收案件编号。
+        alias: [案件编号]
+        sync: false
+      - name: customer_id
+        role: foreign_key
+        description: 客户 ID，关联 customer.id。
+        alias: [客户ID]
+        sync: false
+      - name: collector_id
+        role: foreign_key
+        description: 催收员 ID，关联 dim_employee.id。
+        alias: [催收员ID, 催收人员]
+        sync: false
+      - name: collection_stage
+        role: dimension
+        description: 催收阶段。
+        alias: [催收阶段, 阶段]
+        sync: true
+      - name: case_status
+        role: dimension
+        description: 案件状态，active/closed 等。
+        alias: [案件状态]
+        sync: true
+      - name: case_amount
+        role: measure
+        description: 案件金额。
+        alias: [案件金额, 催收金额]
+        sync: false
+      - name: assigned_at
+        role: dimension
+        description: 分案时间。
+        alias: [分案时间]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+  - name: collection_performance_daily
+    role: fact
+    description: 催收绩效日表，维护催收员每日案件、联系、承诺和回收指标。
+    columns:
+      - name: id
+        role: primary_key
+        description: 绩效记录主键 ID。
+        alias: [绩效ID]
+        sync: false
+      - name: stat_date
+        role: dimension
+        description: 统计日期。
+        alias: [统计日期, 日期]
+        sync: false
+      - name: collector_id
+        role: foreign_key
+        description: 催收员 ID，关联 dim_employee.id。
+        alias: [催收员ID, 催收人员]
+        sync: false
+      - name: branch_id
+        role: foreign_key
+        description: 机构 ID，关联 dim_branch.id。
+        alias: [机构ID]
+        sync: false
+      - name: collection_stage
+        role: dimension
+        description: 催收阶段。
+        alias: [催收阶段]
+        sync: true
+      - name: assigned_case_count
+        role: measure
+        description: 分案数量。
+        alias: [分案数]
+        sync: false
+      - name: assigned_amount
+        role: measure
+        description: 分案金额，催收回收率分母。
+        alias: [分案金额]
+        sync: false
+      - name: recovered_amount
+        role: measure
+        description: 回收金额，催收回收率分子。
+        alias: [回收金额, 催收回收金额]
+        sync: false
+      - name: recovery_rate
+        role: measure
+        description: 催收回收率，recovered_amount/assigned_amount。
+        alias: [催收回收率, 回收率]
+        sync: false
+      - name: created_at
+        role: dimension
+        description: 记录创建时间。
+        alias: [创建时间]
+        sync: false
+
+metrics:
+  - name: 新增客户数
+    description: 统计指定时间范围内新注册/新开户的客户数量，按 customer.created_at 或 customer.opened_at 过滤，count distinct customer.id。
+    relevant_columns:
+      - customer.id
+      - customer.created_at
+      - customer.opened_at
+    alias: [新开户数, 新增用户, 新客户数]
+
+  - name: 活跃客户数
+    description: 统计当前状态为 active 的客户数量，customer_status = active，count distinct customer.id。
+    relevant_columns:
+      - customer.id
+      - customer.customer_status
+    alias: [活跃用户数, 有效客户数]
+
+  - name: 正常账户数
+    description: 统计当前状态为 active 的银行账户数量，account_status = active，count bank_account.id。
+    relevant_columns:
+      - bank_account.id
+      - bank_account.account_status
+    alias: [有效账户数, 活跃账户数]
+
+  - name: 新增账户数
+    description: 统计指定时间范围内新开的银行账户数量，按 bank_account.opened_at 或 created_at 过滤。
+    relevant_columns:
+      - bank_account.id
+      - bank_account.opened_at
+      - bank_account.created_at
+    alias: [新开账户数]
+
+  - name: 交易金额
+    description: 统计成功交易的总金额，transaction_status = success，sum account_transaction.transaction_amount。
+    relevant_columns:
+      - account_transaction.transaction_amount
+      - account_transaction.transaction_status
+      - account_transaction.transaction_at
+    alias: [流水金额, 交易额, 交易总额]
+
+  - name: 交易笔数
+    description: 统计成功交易的笔数，transaction_status = success，count account_transaction.id。
+    relevant_columns:
+      - account_transaction.id
+      - account_transaction.transaction_status
+      - account_transaction.transaction_at
+    alias: [交易次数, 成功交易笔数]
+
+  - name: 失败交易笔数
+    description: 统计失败交易的笔数，transaction_status = failed，count account_transaction.id。
+    relevant_columns:
+      - account_transaction.id
+      - account_transaction.transaction_status
+    alias: [失败笔数]
+
+  - name: 理财持仓规模
+    description: 统计当前有效理财持仓的市值总和，position_status = active，sum wealth_position.market_value_amount。
+    relevant_columns:
+      - wealth_position.market_value_amount
+      - wealth_position.position_status
+    alias: [AUM, 理财规模, 持仓规模]
+
+  - name: 理财持仓数
+    description: 统计当前有效理财持仓笔数，position_status = active，count wealth_position.id。
+    relevant_columns:
+      - wealth_position.id
+      - wealth_position.position_status
+    alias: [持仓笔数]
+
+  - name: 理财订单金额
+    description: 统计已确认理财订单金额总和，order_status 为 confirmed 相关状态，sum confirmed_amount 或 order_amount。
+    relevant_columns:
+      - wealth_order.order_amount
+      - wealth_order.confirmed_amount
+      - wealth_order.order_status
+      - wealth_order.confirmed_at
+    alias: [理财订单总额]
+
+  - name: 贷款申请数
+    description: 统计贷款申请笔数，count loan_application.id，可按 submitted_at 过滤时间范围。
+    relevant_columns:
+      - loan_application.id
+      - loan_application.submitted_at
+      - loan_application.application_status
+    alias: [申请笔数, 贷款申请笔数]
+
+  - name: 有效贷款合同数
+    description: 统计当前有效贷款合同数量，contract_status = active，count loan_contract.id。
+    relevant_columns:
+      - loan_contract.id
+      - loan_contract.contract_status
+    alias: [活跃合同数, 有效合同数]
+
+  - name: 放款金额
+    description: 统计成功放款金额总和，disbursement_status = success，sum loan_disbursement.disbursement_amount。
+    relevant_columns:
+      - loan_disbursement.disbursement_amount
+      - loan_disbursement.disbursement_status
+      - loan_disbursement.disbursed_at
+    alias: [放款额, 放款总额]
+
+  - name: 贷款余额
+    description: 统计当前剩余本金总和，contract_status = active，sum loan_contract.outstanding_principal_amount。
+    relevant_columns:
+      - loan_contract.outstanding_principal_amount
+      - loan_contract.contract_status
+    alias: [剩余本金, 未还本金]
+
+  - name: 还款金额
+    description: 统计成功还款金额总和，repayment_status = success，sum repayment_record.repayment_amount。
+    relevant_columns:
+      - repayment_record.repayment_amount
+      - repayment_record.repayment_status
+      - repayment_record.repaid_at
+    alias: [还款额, 还款总额]
+
+  - name: 逾期余额
+    description: 统计当前活跃逾期的未还金额总和，overdue_status = active，sum overdue_record.outstanding_amount。
+    relevant_columns:
+      - overdue_record.outstanding_amount
+      - overdue_record.overdue_status
+      - overdue_record.overdue_level
+    alias: [逾期金额, 逾期总额]
+
+  - name: 逾期合同数
+    description: 统计当前存在活跃逾期记录的合同数量，count distinct overdue_record.contract_id where overdue_status = active。
+    relevant_columns:
+      - overdue_record.contract_id
+      - overdue_record.overdue_status
+    alias: [逾期笔数]
+
+  - name: 风险事件数
+    description: 统计风险事件数量，count risk_event.id，可按 created_at 过滤时间范围。
+    relevant_columns:
+      - risk_event.id
+      - risk_event.created_at
+      - risk_event.event_type
+    alias: [风控事件数, 风险事件数量]
+
+  - name: 催收案件数
+    description: 统计催收案件数量，count collection_case.id，可按 case_status 过滤。
+    relevant_columns:
+      - collection_case.id
+      - collection_case.case_status
+      - collection_case.created_at
+    alias: [催收件数]
+
+  - name: 催收回收金额
+    description: 统计催收回收金额总和，sum collection_performance_daily.recovered_amount。
+    relevant_columns:
+      - collection_performance_daily.recovered_amount
+      - collection_performance_daily.stat_date
+    alias: [回收金额]
+
+  - name: 催收回收率
+    description: 催收回收率 = recovered_amount / assigned_amount，可使用 collection_performance_daily.recovery_rate 或自行计算。
+    relevant_columns:
+      - collection_performance_daily.recovery_rate
+      - collection_performance_daily.recovered_amount
+      - collection_performance_daily.assigned_amount
+    alias: [回收率]

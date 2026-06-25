@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>金融问数调试页</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; margin: 0; background: #f5f7fb; color: #1f2937; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    .subtitle { color: #6b7280; margin-bottom: 20px; }
+    .panel { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 16px; }
+    textarea { width: 100%; min-height: 80px; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; resize: vertical; }
+    button { background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 10px 18px; font-size: 15px; cursor: pointer; margin-top: 12px; }
+    button:disabled { background: #93c5fd; cursor: not-allowed; }
+    .examples { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .example { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; border-radius: 999px; padding: 6px 12px; font-size: 13px; cursor: pointer; }
+    #stages, #result { white-space: pre-wrap; word-break: break-word; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.6; }
+    #stages { color: #374151; min-height: 120px; background: #f9fafb; padding: 12px; border-radius: 8px; }
+    #result { color: #111827; min-height: 80px; background: #ecfdf5; padding: 12px; border-radius: 8px; }
+    .label { font-weight: 600; margin-bottom: 8px; }
+    .error { color: #b91c1c; background: #fef2f2; padding: 12px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>金融问数调试页</h1>
+    <p class="subtitle">输入自然语言问题，实时查看问数流程与查询结果</p>
+
+    <div class="panel">
+      <div class="label">问题</div>
+      <textarea id="query" placeholder="例如：本月新增客户数是多少？">本月新增客户数是多少？</textarea>
+      <button id="submit">开始问数</button>
+      <div class="examples">
+        <span class="example">当前正常账户数是多少</span>
+        <span class="example">最近30天交易金额是多少</span>
+        <span class="example">当前理财持仓规模是多少</span>
+        <span class="example">本月放款金额是多少</span>
+        <span class="example">当前逾期余额是多少</span>
+        <span class="example">催收回收率是多少</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="label">执行进度</div>
+      <div id="stages"></div>
+    </div>
+
+    <div class="panel">
+      <div class="label">查询结果</div>
+      <div id="result">等待提问...</div>
+    </div>
+  </div>
+
+  <script>
+    const queryEl = document.getElementById('query');
+    const submitBtn = document.getElementById('submit');
+    const stagesEl = document.getElementById('stages');
+    const resultEl = document.getElementById('result');
+
+    document.querySelectorAll('.example').forEach(el => {
+      el.addEventListener('click', () => {
+        queryEl.value = el.textContent;
+      });
+    });
+
+    submitBtn.addEventListener('click', async () => {
+      const query = queryEl.value.trim();
+      if (!query) return;
+
+      submitBtn.disabled = true;
+      stagesEl.textContent = '';
+      resultEl.textContent = '处理中...';
+      resultEl.className = '';
+
+      try {
+        const resp = await fetch('/api/query', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query }),
+        });
+
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+
+        const reader = resp.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split('\n\n');
+          buffer = parts.pop() || '';
+
+          for (const part of parts) {
+            const line = part.trim();
+            if (!line.startsWith('data:')) continue;
+            const payload = line.slice(5).trim();
+            try {
+              const data = JSON.parse(payload);
+              if (data.error) {
+                resultEl.className = 'error';
+                resultEl.textContent = data.error;
+                continue;
+              }
+              if (data.stage) {
+                stagesEl.textContent += `[${new Date().toLocaleTimeString()}] ${data.stage}\n`;
+              } else {
+                resultEl.textContent = JSON.stringify(data, null, 2);
+              }
+            } catch (_) {
+              stagesEl.textContent += payload + '\n';
+            }
+          }
+        }
+      } catch (err) {
+        resultEl.className = 'error';
+        resultEl.textContent = String(err);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

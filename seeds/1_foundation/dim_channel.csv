@@ -1,0 +1,8 @@
+id,channel_code,channel_name,channel_type,channel_status,yn,created_at,updated_at
+0,ALL,全部渠道,batch,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00
+1,MOBILE_BANK,手机银行,mobile_bank,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00
+2,ONLINE_BANK,网上银行,online_bank,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00
+3,COUNTER,营业柜面,counter,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00
+4,OPEN_API,开放银行 API,open_api,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00
+5,PARTNER_APP,合作方渠道,partner,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00
+6,BATCH_JOB,批处理渠道,batch,active,1,2018-01-01 00:00:00,2026-01-01 00:00:00

@@ -1,0 +1,9 @@
+id,strategy_code,strategy_name,strategy_type,applicable_event_type,decision_mode,strategy_version,risk_level_id,effective_from,effective_to,strategy_status,created_by,created_at,updated_at
+1,STR_FRAUD_TXN,交易反欺诈策略,fraud,transaction,highest_risk,v1,13,2024-01-01 00:00:00,,active,3,2024-01-01 00:00:00,2026-01-01 00:00:00
+2,STR_AML_TXN,反洗钱交易监控策略,aml,suspicious_transaction,score_sum,v1,13,2024-01-01 00:00:00,,active,3,2024-01-01 00:00:00,2026-01-01 00:00:00
+3,STR_CREDIT_LOAN,贷款准入风控策略,credit,loan_application,highest_risk,v1,13,2024-01-01 00:00:00,,active,3,2024-01-01 00:00:00,2026-01-01 00:00:00
+4,STR_TXN_MONITOR,账户交易监控策略,transaction,transaction,first_hit,v1,13,2024-01-01 00:00:00,,active,5,2024-01-01 00:00:00,2026-01-01 00:00:00
+5,STR_WEALTH_SUIT,理财适当性策略,wealth_suitability,wealth_order,first_hit,v1,12,2024-01-01 00:00:00,,active,5,2024-01-01 00:00:00,2026-01-01 00:00:00
+6,STR_COLLECTION_ASSIGN,催收分案策略,collection,collection,weighted_score,v1,13,2024-01-01 00:00:00,,active,5,2024-01-01 00:00:00,2026-01-01 00:00:00
+7,STR_ACCOUNT_SECURITY,账户安全监控策略,fraud,account_login,score_sum,v1,13,2024-01-01 00:00:00,,active,3,2024-01-01 00:00:00,2026-01-01 00:00:00
+8,STR_COLLATERAL_MONITOR,抵押物风险监控策略,credit,collateral_asset,highest_risk,v1,13,2024-01-01 00:00:00,,active,3,2024-01-01 00:00:00,2026-01-01 00:00:00

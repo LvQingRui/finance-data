@@ -1,0 +1,17 @@
+id,rule_code,rule_name,rule_type,risk_level_id,rule_expression,rule_version,threshold_value,decision_action,rule_status,created_at,updated_at
+1,FRAUD_DEVICE_MULTI,设备多账户登录,fraud,13,device_account_count_24h > threshold,v1,3,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+2,FRAUD_IP_GEO_JUMP,异地登录跳变,fraud,13,geo_distance_km_1h > threshold,v1,800,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+3,AML_LARGE_TXN,大额交易监控,aml,13,transaction_amount >= threshold,v1,50000,alert,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+4,AML_STRUCTURING,疑似拆分交易,aml,14,small_txn_count_24h >= threshold,v1,5,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+5,CREDIT_SCORE_LOW,征信评分过低,credit,14,credit_score < threshold,v1,620,reject,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+6,CREDIT_DTI_HIGH,负债收入比过高,credit,13,debt_income_ratio > threshold,v1,0.55,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+7,TXN_AMOUNT_HIGH,交易金额过高,transaction,13,transaction_amount > threshold,v1,100000,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+8,TXN_BLACKLIST_HIT,黑名单交易命中,transaction,15,blacklist_hit = 1,v1,1,freeze,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+9,WEALTH_RISK_MISMATCH,理财风险不匹配,wealth_suitability,14,customer_risk_sort < product_risk_sort,v1,1,reject,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+10,WEALTH_FIRST_HIGH_RISK,首次购买高风险产品,wealth_suitability,13,first_high_risk_purchase = 1,v1,1,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+11,ACCOUNT_LOGIN_FAIL,账户连续登录失败,fraud,12,login_fail_count_1h >= threshold,v1,5,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+12,ACCOUNT_DEVICE_NEW,新设备高额交易,fraud,13,new_device_txn_amount >= threshold,v1,20000,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+13,AML_HIGH_RISK_REGION,高风险地区交易,aml,14,high_risk_region_hit = 1,v1,1,alert,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+14,CREDIT_OVERDUE_HISTORY,历史逾期次数过多,credit,14,overdue_count_12m > threshold,v1,3,reject,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+15,COLLECTION_BROKEN_PROMISE,承诺还款违约,collection,13,broken_promise_count >= threshold,v1,2,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00
+16,COLLATERAL_VALUE_DROP,抵押物估值下跌,credit,13,collateral_ltv > threshold,v1,0.8,manual_review,active,2024-01-01 00:00:00,2026-01-01 00:00:00

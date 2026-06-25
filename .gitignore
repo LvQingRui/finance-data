@@ -1,0 +1,40 @@
+# Python-generated files
+__pycache__/
+*.py[cod]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.pyright/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local config and secrets (never commit)
+.env
+.env.local
+.env.*.local
+conf/app_config.local.yaml
+
+# Logs
+logs/
+*.log
+app/agent/logs/
+app/core/logs/
+app/scripts/logs/
+
+# Generated / local data
+seeds/raw/
+
+# macOS
+.DS_Store
